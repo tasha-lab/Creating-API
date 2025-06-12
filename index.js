@@ -97,18 +97,60 @@ app.put(`/task/:id`,async (req,res) => {
     }
 })
 
-app.delete(`/task/:id`, async (req,res) => {
+app.patch(`/task/:id`,async (req,res) => {
     try {
         const {id} = req.params
-         await client.tasks.update({
-            where : {id},
-            data:{
-                isDeleted:true
-            }
+        const {title,description}=req.body
+        await client.tasks.update({
+           where :{id} ,data:{
+            title,
+            description
+           }
         });
         res.status(200).json({
             success:true,
-            message:"Task deleted successfully",
+            message:"Task partially updated successfully",
+            
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message:`Something went wrong`
+        })
+    }
+})
+// This piece of code changes the is deleted status to true
+
+// app.delete(`/task/:id`, async (req,res) => {
+//     try {
+//         const {id} = req.params
+//          await client.tasks.update({
+//             where : {id},
+//             data:{
+//                 isDeleted:true
+//             }
+//         });
+//         res.status(200).json({
+//             success:true,
+//             message:"Task deleted successfully",
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).json({
+//             message:`Something went wrong`
+//         })
+//     }
+// })
+
+// This one hard deletes a piece of code
+app.delete(`/task/:id`, async (req,res) => {
+    try {
+        const {id} = req.params
+         await client.tasks.delete({
+            where:{id}
+        })
+        return res.status(200).json({
+            message:`Task deleted `
         })
     } catch (error) {
         console.log(error)
